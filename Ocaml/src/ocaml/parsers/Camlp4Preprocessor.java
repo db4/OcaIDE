@@ -10,11 +10,14 @@ import ocaml.exec.CommandRunner;
 import ocaml.parser.Def;
 import ocaml.util.Misc;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -51,7 +54,7 @@ public class Camlp4Preprocessor {
 	/**
 	 * Preprocess this file by using the preprocessing comment found in the document supplied in the
 	 * constructor.
-	 * 
+	 *
 	 * @return false if the operation was cancelled, false otherwise
 	 */
 	public boolean preprocess(File file, IProgressMonitor monitor) {
@@ -84,6 +87,13 @@ public class Camlp4Preprocessor {
 		// }
 
 		String strParams = matcherPreprocess.group(1);
+		IStringVariableManager varManager = VariablesPlugin.getDefault().getStringVariableManager();
+		try {
+			strParams = varManager.performStringSubstitution(strParams);
+		} catch (CoreException e) {
+			OcamlPlugin.logError("error while resolving variables", e);
+		}
+
 		String[] params = DebugPlugin.parseArguments(strParams);
 
 		for (String param : params) {
