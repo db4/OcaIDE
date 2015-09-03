@@ -240,7 +240,7 @@ public class OcamlNewInterfaceParser {
 		 * The source was preprocessed by camlp4: update the identifiers
 		 * locations using the 'loc' comments leaved by camlp4
 		 */
-		if (preprocessor.mustPreprocess()) {
+		if (preprocessor.camlp4Preprocess()) {
 			// System.err.println("associate locations");
 
 			Document document = new Document(lines);

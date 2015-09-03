@@ -35,7 +35,9 @@ import org.eclipse.jface.text.IRegion;
 
 public class Camlp4Preprocessor {
 	private Pattern patternPreprocess = Pattern.compile("\\A\\s*\\(\\*\\s*pp\\s*:(.*?)\\*\\)");
+	private Pattern patternOption = Pattern.compile("^\\s*-\\w");
 	private boolean bPreprocess;
+	private boolean bCamlp4Preprocess;
 	private Matcher matcherPreprocess;
 	private String output;
 	private String errorOutput;
@@ -45,10 +47,20 @@ public class Camlp4Preprocessor {
 	public Camlp4Preprocessor(String document) {
 		matcherPreprocess = patternPreprocess.matcher(document);
 		bPreprocess = matcherPreprocess.find();
+		if (bPreprocess) {
+			bCamlp4Preprocess = patternOption.matcher(matcherPreprocess.group(1)).find();
+		}
+		else {
+			bCamlp4Preprocess = false;
+		}
 	}
 
 	public boolean mustPreprocess() {
 		return bPreprocess;
+	}
+
+	public boolean camlp4Preprocess() {
+		return bCamlp4Preprocess;
 	}
 
 	/**
@@ -68,23 +80,6 @@ public class Camlp4Preprocessor {
 		// String path = editor.getProject().getLocation().toOSString();
 		// String filepath =
 		// editor.getFileBeingEdited().getLocation().toOSString();
-		ArrayList<String> command = new ArrayList<String>();
-		command.add(OcamlPlugin.getCamlp4FullPath());
-
-		// if (strDocument.startsWith("(*pp:revised*)")) {
-		// command.add("-parser");
-		// command.add("OCamlRevised");
-		// } else if (strDocument.startsWith("(*pp:quotations*)")) {
-		// command.add("-parser");
-		// command.add("Camlp4OcamlRevisedParser");
-		// command.add("-parser");
-		// command.add("Camlp4QuotationCommon");
-		// command.add("-parser");
-		// command.add("Camlp4OCamlRevisedQuotationExpander");
-		// } else {
-		// command.add("-parser");
-		// command.add("Ocaml");
-		// }
 
 		String strParams = matcherPreprocess.group(1);
 		IStringVariableManager varManager = VariablesPlugin.getDefault().getStringVariableManager();
@@ -96,20 +91,44 @@ public class Camlp4Preprocessor {
 
 		String[] params = DebugPlugin.parseArguments(strParams);
 
+		ArrayList<String> command = new ArrayList<String>();
+
+		if (bCamlp4Preprocess) {
+			command.add(OcamlPlugin.getCamlp4FullPath());
+
+			// if (strDocument.startsWith("(*pp:revised*)")) {
+			// command.add("-parser");
+			// command.add("OCamlRevised");
+			// } else if (strDocument.startsWith("(*pp:quotations*)")) {
+			// command.add("-parser");
+			// command.add("Camlp4OcamlRevisedParser");
+			// command.add("-parser");
+			// command.add("Camlp4QuotationCommon");
+			// command.add("-parser");
+			// command.add("Camlp4OCamlRevisedQuotationExpander");
+			// } else {
+			// command.add("-parser");
+			// command.add("Ocaml");
+			// }
+		}
+
 		for (String param : params) {
 			command.add(param);
 		}
 
-		command.add("-printer");
-		command.add("Ocaml");
-		command.add("-add_locations");
+		if (bCamlp4Preprocess) {
+			command.add("-printer");
+			command.add("Ocaml");
+			command.add("-add_locations");
+		}
+
 		command.add(filename);
 
 		final String[] cmd = command.toArray(new String[command.size()]);
 
-		class Camlp4Job extends Job {
+		class PreprocessJob extends Job {
 
-			Camlp4Job(String name) {
+			PreprocessJob(String name) {
 				super(name);
 			}
 
@@ -132,7 +151,7 @@ public class Camlp4Preprocessor {
 			}
 		}
 
-		Camlp4Job job = new Camlp4Job("camlp4");
+		PreprocessJob job = new PreprocessJob("preprocess");
 		job.setPriority(Job.DECORATE);
 		job.schedule();
 

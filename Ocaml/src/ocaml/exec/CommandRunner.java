@@ -16,6 +16,8 @@ public class CommandRunner {
 
 	private StreamGobbler outputGobbler = null;
 
+	private String StartError = null;
+
 	private Process process = null;
 
 	private int exitValue;
@@ -73,6 +75,7 @@ public class CommandRunner {
 			this.exitValue = this.process.waitFor();
 		} catch (Exception e) {
 			OcamlPlugin.logError("ocaml plugin error", e);
+			this.StartError = e.toString();
 		}
 	}
 
@@ -91,6 +94,9 @@ public class CommandRunner {
 
 	/** Get the error output */
 	public synchronized String getStderr() {
+		if(this.StartError != null) {
+			return this.StartError;
+		}
 		if(this.errorGobbler == null) {
 			return null;
 		}

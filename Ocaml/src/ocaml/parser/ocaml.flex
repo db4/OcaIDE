@@ -2,6 +2,8 @@
 
 package ocaml.parser;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.Stack;
 
 import beaver.Symbol;
@@ -14,6 +16,7 @@ import ocaml.parser.OcamlParser.Terminals;
 %{
 	enum eStringsComments{IN_INITIAL, IN_STRING, IN_COMMENT};
 	Stack<eStringsComments> stackStringsComments = new Stack<eStringsComments>();
+	Pattern patternLine = Pattern.compile("\\s*#\\s*([0-9]+).*");
 %}
 
 %public
@@ -176,7 +179,12 @@ Float_literal = [0-9][0-9\_]*("."[0-9\_]*)?([eE][+-]?[0-9][0-9\_]*)?
 
     "(*" { stackStringsComments.push(eStringsComments.IN_INITIAL); yybegin(COMMENT); }
 
-    "#" [ \t]* [0-9]+ [ \t]* ("\"" [^\r\n\"] "\"")? [^\r\n]* {Newline} {}
+    "#" [ \t]* [0-9]+ [ \t]* ("\"" [^\r\n\"] "\"")? [^\r\n]* {Newline} {
+        Matcher m = patternLine.matcher(yytext());
+        if (m.find()) {
+          yyline = Integer.parseInt(m.group(1))-2;
+        }
+    }
 
    "#"  { return new Symbol(Terminals.SHARP, yyline, yycolumn, yytext().length(), yytext()); }
    "&"  { return new Symbol(Terminals.AMPERSAND, yyline, yycolumn, yytext().length(), yytext()); }

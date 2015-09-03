@@ -153,9 +153,9 @@ public class OutlineJob extends Job {
 				}
 			}
 
-			// camlp4 errors?
+			// camlp4/cppo errors?
 			Pattern patternErrors = Pattern
-					.compile("File \".*?\", line (\\d+), characters (\\d+)-(\\d+):");
+					.compile("\\s*(?:\\w+:)?\\s*File \".*?\", line (\\d+), characters (\\d+)-(\\d+):?");
 
 			String errorOutput = preprocessor.getErrorOutput();
 
@@ -310,7 +310,7 @@ public class OutlineJob extends Job {
 		 * The source was preprocessed by camlp4: update the identifiers locations using the 'loc'
 		 * comments leaved by camlp4
 		 */
-		if (preprocessor.mustPreprocess()) {
+		if (preprocessor.camlp4Preprocess()) {
 			// System.err.println("associate locations");
 
 			Document document = new Document(strDocument);

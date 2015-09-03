@@ -59,10 +59,11 @@ public class ProblemMarkers {
 			+ "Unbound module type )");
 
 	/** regex: File "[f]" line [l], characters [a]-[b]: (Ocaml compilers)
+     *     or    Error: File "[f]", line [l], characters [a]-[b] (cppo)
 	 *     or    File [f] line [l]: characters [a]-[b]  (Omake)
 	 */
 	private final Pattern patternFile = Pattern
-			.compile("^\\s*File (\"?)(.+?)\\1[:,] line (\\d+), characters (\\d+)-(\\d+):?\\s*$");
+			.compile("^\\s*(?:\\w+:)?\\s*File (\"?)(.+?)\\1[:,] line (\\d+), characters (\\d+)-(\\d+):?\\s*$");
 
 	/** Create the markers for error messages coming from the OCaml compiler. */
 	public void makeMarkers(String compilerOutput) {
