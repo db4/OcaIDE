@@ -262,6 +262,7 @@
   		<filter pattern=".HyperlinksLinkedFiles" selected="true"/>
 		<filter pattern=".omakedb*" selected="true"/>
   		<filter pattern="_build" selected="false"/>
+  		<filter pattern="*.bak" selected="true"/>
         <filter pattern=".svn" selected="true"/>
         <filter pattern=".git" selected="true"/>
         <filter
