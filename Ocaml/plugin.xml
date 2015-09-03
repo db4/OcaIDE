@@ -249,6 +249,7 @@
 		<filter selected="true" pattern="*.cmxa"/>
 		<filter pattern="*.o" selected="true"/>
 		<filter pattern="*.obj" selected="true"/>
+		<filter pattern="*.omc" selected="true"/>
 		<filter pattern=".settings" selected="true"/>
 		<filter pattern=".paths" selected="true"/>
 		<filter pattern="._d" selected="true"/>
@@ -259,6 +260,7 @@
   		<filter pattern=".DebuggerSourceLookup" selected="true"/>
   		<filter pattern=".makefilepaths" selected="true"/>
   		<filter pattern=".HyperlinksLinkedFiles" selected="true"/>
+		<filter pattern=".omakedb*" selected="true"/>
   		<filter pattern="_build" selected="false"/>
         <filter pattern=".svn" selected="true"/>
         <filter pattern=".git" selected="true"/>
@@ -1129,6 +1131,7 @@
 		<ignore enabled="true" pattern="*.cmxa"/>
 		<ignore pattern="*.o" enabled="true"/>
 		<ignore pattern="*.obj" enabled="true"/>
+		<ignore pattern="*.omc" enabled="true"/>
 		<ignore pattern=".settings" enabled="true"/>
 		<ignore pattern=".paths" enabled="true"/>
 		<ignore pattern="._d" enabled="true"/>
@@ -1136,6 +1139,7 @@
 		<ignore pattern="._ncdi" enabled="true"/>
   		<ignore pattern="*._old" enabled="true"/>
   		<ignore pattern=".makefilepaths" enabled="true"/>
+		<ignore pattern=".omakedb*" enabled="true"/>
   		<ignore pattern="_build" enabled="true"/>
   		<ignore pattern="*.byte" enabled="true"/>
   		<ignore pattern="*.native" enabled="true"/>
