@@ -223,6 +223,12 @@ public class ProblemMarkers {
 			int idx = fullWorkspaceRelativePath.lastIndexOf(File.separatorChar);
 			if (idx != -1)
 				fullWorkspaceRelativePath = fullWorkspaceRelativePath.substring(idx + 1);
+			else if (File.separatorChar != '/') {
+				// handle Cygwin-built tool under Win32 eclipse
+				idx = fullWorkspaceRelativePath.lastIndexOf('/');
+				if (idx != -1)
+					fullWorkspaceRelativePath = fullWorkspaceRelativePath.substring(idx + 1);
+			}
 
 			for (IFile file : Misc.getProjectFiles(project)) {
 				if (file.getName().equals(fullWorkspaceRelativePath)) {
