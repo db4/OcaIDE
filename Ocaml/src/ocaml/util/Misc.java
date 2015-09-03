@@ -508,19 +508,20 @@ public class Misc {
 	 */
 	public static File getOtherFileFor(IProject project, IPath mlPath, String extension) {
 		String projectPath = project.getLocation().toOSString() + File.separator;
+		String workspacePath = project.getWorkspace().getRoot().getLocation().toOSString() + File.separator;
 
 		if (mlPath.segmentCount() < 2)
 			return null;
 
 		// remove the project name from the path
-		mlPath = mlPath.removeFirstSegments(1);
+		IPath relMlPath = mlPath.removeFirstSegments(1);
 
 		String filename = mlPath.lastSegment();
 
 		if (filename.endsWith(".ml")) {
 			String annotFilename = filename.substring(0, filename.length() - 3) + extension;
 
-			IPath basePath = mlPath.removeLastSegments(1).append(annotFilename);
+			IPath basePath = relMlPath.removeLastSegments(1).append(annotFilename);
 
 			// first, try with a .annot in the same directory
 			File annotFile1 = new File(projectPath + basePath.toOSString());
@@ -532,6 +533,14 @@ public class Misc {
 					+ basePath.toOSString());
 			if (annotFile2.exists())
 				return annotFile2;
+
+			basePath = mlPath.removeLastSegments(1).append(annotFilename);
+
+			// then, try with a .annot in the _build/ directory + same directory
+			File annotFile3 = new File(workspacePath + "_build" + File.separator
+					+ basePath.toOSString());
+			if (annotFile3.exists())
+				return annotFile3;
 		}
 
 		return null;
