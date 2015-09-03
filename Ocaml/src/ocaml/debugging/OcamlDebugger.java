@@ -15,6 +15,7 @@ import ocaml.debugging.views.OcamlBreakpointsView;
 import ocaml.debugging.views.OcamlCallStackView;
 import ocaml.debugging.views.OcamlWatchView;
 import ocaml.editors.OcamlEditor;
+import ocaml.exec.CommandRunner;
 import ocaml.exec.ExecHelper;
 import ocaml.exec.IExecEvents;
 import ocaml.parser.Def;
@@ -219,6 +220,9 @@ public class OcamlDebugger implements IExecEvents {
 			emptyCallStackView();
 			resetWatchVariables();
 
+			String[] commandHelp = new String[] {ocamldebug, "-help"};
+			CommandRunner commandRunner = new CommandRunner(commandHelp, null);
+			String ocamldebugHelp = commandRunner.getStdout();
 
 			/*
 			 * FIXME launch shortcuts on exe symbolic links don't work (debugger can't find other
@@ -228,6 +232,9 @@ public class OcamlDebugger implements IExecEvents {
 			// Build the command line arguments for ocamldebug
 			List<String> commandLineArgs = new ArrayList<String>();
 			commandLineArgs.add(ocamldebug);
+			if (ocamldebugHelp.contains("-machine-readable")) {
+				commandLineArgs.add("-machine-readable");
+			}
 			if (remoteDebugEnable) {
 				commandLineArgs.add("-s");
 				commandLineArgs.add("0.0.0.0:" + remoteDebugPort);
