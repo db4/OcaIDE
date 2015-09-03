@@ -225,7 +225,19 @@ public class OutlineJob extends Job {
 				sanitizedDocument[i] = c;
 			}
 
-			strDocument = String.copyValueOf(sanitizedDocument);
+			/*
+			 * Wipe out OCaml attributes that the parser cannot handle yet
+			 */
+			StringBuffer sb = new StringBuffer();
+			Pattern patt = Pattern.compile("\\[@+([^\\[\\]]+)\\]");
+			Matcher m = patt.matcher(new String(sanitizedDocument));
+			while (m.find()) {
+				String text = String.format("%"+m.group(1).length()+"s", " ");
+			    m.appendReplacement(sb, Matcher.quoteReplacement(text));
+			}
+			m.appendTail(sb);
+
+			strDocument = sb.toString();
 			sanitizedDocument = null;
 		} catch (OutOfMemoryError e) {
 			OcamlPlugin.logError("Not enough memory to parse the file " + filePath.toOSString(), e);

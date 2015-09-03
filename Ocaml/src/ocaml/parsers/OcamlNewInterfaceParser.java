@@ -290,7 +290,19 @@ public class OcamlNewInterfaceParser {
 			str.append(c);
 		}
 
-		final StringReader in = new StringReader(str.toString());
+		/*
+		 * Wipe out OCaml attributes that the parser cannot handle yet
+		 */
+		StringBuffer sb = new StringBuffer();
+		Pattern patt = Pattern.compile("\\[@+([^\\[\\]]+)\\]");
+		Matcher m = patt.matcher(str.toString());
+		while (m.find()) {
+			String text = String.format("%"+m.group(1).length()+"s", " ");
+		    m.appendReplacement(sb, Matcher.quoteReplacement(text));
+		}
+		m.appendTail(sb);
+
+		final StringReader in = new StringReader(sb.toString());
 		final OcamlScanner scanner = new OcamlScanner(in);
 		final OcamlParser parser = new OcamlParser();
 
