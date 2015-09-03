@@ -345,8 +345,10 @@ public class OcamlProjectPathsProperties extends PropertyPage implements IWorkbe
 		if (selection.length > 0) {
 			int iSelected = selection[0];
 			pathsList.remove(iSelected);
-			if (pathsList.getItemCount() > 0)
+			if (pathsList.getItemCount() > 0) {
 				pathsList.select(Math.min(iSelected, pathsList.getItemCount() - 1));
+				pathsList.showSelection();
+			}
 
 		} else
 			MessageDialog.openError(composite.getShell(), "Selection is empty",
