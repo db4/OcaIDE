@@ -1022,7 +1022,7 @@ public class OcamlDebugger implements IExecEvents {
 	}
 
 	Pattern patternBreakpoint = Pattern
-			.compile("Breakpoint\\s+(\\d+)\\s+at\\s+(\\d+):\\s+file\\s+(.*?),\\s+line\\s+(\\d+),\\s+characters\\s+(\\d+)-(\\d+)");
+			.compile("Breakpoint\\s+(\\d+)\\s+at\\s+(\\d+)\\s*:\\s+file\\s+(.*?),\\s+line\\s+(\\d+),\\s+characters\\s+(\\d+)-(\\d+)");
 
 	private void processBreakpoint(final String output) {
 		Matcher matcher = patternBreakpoint.matcher(output);
